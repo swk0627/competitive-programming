@@ -1,0 +1,5 @@
+n = int(input())
+As = list(map(int, input().split()))
+m1 = max(As[:len(As)//2])
+m2 = max(As[len(As)//2:])
+print(As.index(min(m1, m2))+1)
