@@ -1,27 +1,25 @@
+import sys
 import heapq
-n, m, x, y = map(int, input().split())
-stks = [[] for _ in range(n)]
+n, m, x, y = map(int, sys.stdin.readline().split())
+x -= 1
+y -= 1
+stks = [ [] for _ in range(n)]
 for _ in range(m):
-    a, b, t, k = (map(int, input().split()))
-    stks[a-1].append([b-1, t, k])
-    stks[b-1].append([a-1, t, k])
-INF = 100000000000001
-dp = [ INF for i in range(n)]
-dp[x-1] = 0
+    a, b, t, k = map(int, sys.stdin.readline().split())
+    stks[a-1].append((b-1, t, k))
+    stks[b-1].append((a-1, t, k))
+dp = [ -1 for _ in range(n)]
+dp[x] = 0
 h = []
-for li in stks[x-1]:
-    h.append([li[1], li[0]])
+for path in stks[x]:
+    h.append((path[1], path[0]))
 heapq.heapify(h)
 while h:
-    t , v = heapq.heappop(h)
-    if dp[v] != INF:
+    t, curr = heapq.heappop(h)
+    if dp[curr] != -1:
         continue
-    dp[v] = t
-    for i in stks[v]:
-        if t % i[2]:
-            s = (t//i[2]+1)*i[2]+i[1]
-        else:
-            s=t+i[1]
-        heapq.heappush(h, (s, i[0]))
-if dp[y-1] == INF: print(-1)
-else: print(dp[y-1])
+    dp[curr] = t
+    for path in stks[curr]:
+        s = -(-t // path[2]) * path[2] + path[1]
+        heapq.heappush(h, (s, path[0]))
+else: print(dp[y])
